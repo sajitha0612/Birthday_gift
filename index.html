@@ -282,13 +282,14 @@ button{font:inherit;color:inherit}
   .t1{left:12px;top:12px}
   .t2{left:auto;right:12px;top:12px}
   .t3{right:auto;left:12px;top:calc(12px + 44 * var(--n))}
-  .t4{right:12px;top:calc(12px + 44 * var(--n))}
+  .t4{right:12px;top:12px}
   .is-case .t3,.is-case .t4{visibility:hidden}
   .is-case .ui .logo{opacity:0;pointer-events:none}
   .m-wm{position:absolute;left:3vw;width:94vw;height:auto;top:calc(12px + 96 * var(--n));overflow:visible}
-  .m-script{position:absolute;right:6vw;top:calc(12px + 96 * var(--n) + 14vw);font:400 15vw/1 'Caveat Brush',cursive;transform:rotate(-7deg);text-shadow:0 2px 10px rgba(0,0,0,.2);white-space:nowrap}
-  .m-badge{position:absolute;right:-6vw;top:calc(12px + 96 * var(--n) + 28vw - 64vw * 470 / 582);width:64vw;height:calc(64vw * 1030 / 582);z-index:-1}
-  .m-badge .badge{left:0;top:0;scale:var(--mbs);translate:calc(-288px + 32vw) 0}
+  .m-script{position:absolute;left:0;right:0;top:calc(12px + 96 * var(--n) + 15vw);text-align:center;font:400 13vw/1 'Caveat Brush',cursive;transform:rotate(-4deg);text-shadow:0 2px 10px rgba(0,0,0,.3);white-space:nowrap}
+  .m-script .sub{margin:.35em 0 0;text-align:center;font-size:.36em}
+  .m-badge{position:absolute;right:-4vw;top:calc(12px + 96 * var(--n) + 36vw - 58vw * 470 / 582);width:58vw;height:calc(58vw * 1030 / 582);z-index:-1}
+  .m-badge .badge{left:0;top:0;scale:var(--mbs);translate:calc(-288px + 29vw) 0}
   .hint{bottom:18px;font-size:11px}
   .ticket{left:0;right:0;margin:0 auto;top:62px;width:min(86vw,360px);height:auto;padding:22px 26px 16px 36px;border-radius:3px;box-shadow:0 14px 30px rgba(0,0,0,.28)}
   .hole{width:15px;height:15px;box-shadow:inset 0 2px 3px rgba(0,0,0,.35)}
@@ -330,7 +331,6 @@ button{font:inherit;color:inherit}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
 .script .sub,.m-script .sub{display:block;margin:.3em 0 0 .2em;font-size:.4em;line-height:1;letter-spacing:0;opacity:.92}
-.m-script .sub{margin:.3em .1em 0 0;text-align:right}
 </style>
 </head>
 <body>
@@ -866,7 +866,7 @@ async function toCase() {
   arriveCase();
 }
 function arriveCase() {
-  mode = 'case'; body.classList.add('is-case');
+  mode = 'case'; body.classList.add('is-case'); layoutTags();
   plate.style.visibility = 'hidden'; kill(cut); cut.style.opacity = 0;
   screen.style.opacity = 1;
   an(flash, [{ opacity: 0 }, { opacity: .55, offset: .25 }, { opacity: 0 }], { duration: 600, easing: 'ease-out', fill: 'none' });
@@ -899,7 +899,7 @@ async function toHero() {
   caseOut();
   await an(screen, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
   kill(screen); screen.style.opacity = 0;
-  body.classList.remove('is-case'); mode = 'hero';
+  body.classList.remove('is-case'); mode = 'hero'; layoutTags();
   root.style.setProperty('--glide', '.9s'); frame.classList.add('glide'); place('hero');
   plate.style.visibility = 'visible';
   kill(cut); cut.style.opacity = 0;
@@ -1062,7 +1062,17 @@ addEventListener('keydown', e => {
   }
 });
 
-addEventListener('resize', () => { frame.classList.remove('glide'); place(poseMode); sizeCv(); fitTitle(); });
+// phones: spread the top buttons evenly across one row
+function layoutTags() {
+  const tags = ['.t1', '.t2', '.t4'].map(s => $(s)).filter(t => t && !(t.matches('.t4') && body.classList.contains('is-case')));
+  if (!isM()) { tags.forEach(t => { t.style.left = t.style.right = ''; }); return; }
+  const pad = 12, widths = tags.map(t => t.offsetWidth), gap = (innerWidth - 2 * pad - widths.reduce((a, b) => a + b, 0)) / (tags.length - 1);
+  let x = pad;
+  tags.forEach((t, k) => { t.style.right = 'auto'; t.style.left = x + 'px'; x += widths[k] + gap; });
+}
+layoutTags();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutTags);
+addEventListener('resize', () => { frame.classList.remove('glide'); place(poseMode); sizeCv(); fitTitle(); layoutTags(); });
 
 /* ---------------- go ---------------- */
 fillCase(0);
