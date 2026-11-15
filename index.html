@@ -329,11 +329,8 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
-.wish{position:absolute;right:calc(32 * var(--n));bottom:calc(22 * var(--n));font-family:'Caveat Brush',cursive;font-size:calc(26 * var(--n));line-height:1;
-  color:#fff;opacity:.85;transform:rotate(-3deg);text-shadow:0 2px 14px rgba(0,0,0,.25);white-space:nowrap;pointer-events:none}
-.wish{transition:opacity .3s}
-@media (max-width:760px){.wish{right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);font-size:19px}
-  .is-case .wish{opacity:0}}
+.script .sub,.m-script .sub{display:block;margin:.3em 0 0 .2em;font-size:.4em;line-height:1;letter-spacing:0;opacity:.92}
+.m-script .sub{margin:.3em .1em 0 0;text-align:right}
 </style>
 </head>
 <body>
@@ -394,8 +391,6 @@ button{font:inherit;color:inherit}
   <div class="m-badge m-only"></div>
 
   <div class="hint pre"><i></i><span>scroll into the memories</span></div>
-  <div class="wish">May all your wishes come true ✨</div>
-
   <div class="ticket">
     <span class="hole h1"></span><span class="hole h2"></span><span class="hole h3"></span><span class="hole h4"></span>
     <h2></h2>
@@ -575,7 +570,10 @@ let rOpen = false, rBusy = false, rIdx = 0;
 /* ---------------- fill content ---------------- */
 document.title = 'Happy Birthday, ' + CONFIG.name.charAt(0) + CONFIG.name.slice(1).toLowerCase();
 $$('[data-name]').forEach(e => e.textContent = CONFIG.name);
-$$('[data-script]').forEach(e => e.textContent = CONFIG.script);
+$$('[data-script]').forEach(e => {
+  e.textContent = CONFIG.script;
+  const sub = document.createElement('span'); sub.className = 'sub'; sub.textContent = 'May all your wishes come true ✨'; e.appendChild(sub);
+});
 $$('[data-age]').forEach(e => e.textContent = CONFIG.age);
 $$('[data-date]').forEach(e => e.textContent = CONFIG.date);
 $$('[data-from]').forEach(e => e.textContent = CONFIG.from);
